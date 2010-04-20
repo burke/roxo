@@ -3,9 +3,7 @@ require 'libxml'
 
 # Ruby Objects as XML Objects
 class ROXO
-  instance_methods.each do |meth|
-    eval "undef #{meth}" unless [:__send__, :__id__, :object_id, :class, :send].include?(meth.to_sym)
-  end
+  (instance_methods - %w{__send__ __id__ object_id class send}).each{|m|eval "undef #{m}"}
 
   include Comparable
   
@@ -22,10 +20,7 @@ class ROXO
 
     @raw, @name, @attributes = xml, xml.name, xml.attributes.to_h
     @children = xml.children.select(&:element?).group_by{|c|c.name.to_sym}
-
-    text_value  = xml.children.select(&:text?).map(&:to_s).reject(&:empty?).join
-    cdata_value = xml.children.select(&:cdata?).map{|c|c.to_s.chomp(']]>').sub('<![CDATA[', '')}.join
-    @value = text_value.empty? ? cdata_value : text_value
+    @value = xml.children.select{|e|e.text? or e.cdata?}.map{|e|e.to_s.chomp(']]>').sub('<![CDATA[','')}.join
   end
 
   def inspect
