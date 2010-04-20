@@ -28,7 +28,6 @@ class ROXO
     @raw, @name, @attributes = xml, xml.name, xml.attributes.to_h
     @children = xml.children.select(&:element?).group_by{|c|c.name.to_sym}
 
-    
     text_value  = xml.children.select(&:text?).map(&:to_s).reject(&:empty?).join
     cdata_value = xml.children.select(&:cdata?).map{|c|c.to_s.chomp(']]>').sub('<![CDATA[', '')}.join
     @value = text_value.empty? ? cdata_value : text_value
