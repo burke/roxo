@@ -23,10 +23,11 @@ class ROXO
   def         to_s; @value;                 end 
   
   def initialize(xml)
-    xml = ::LibXML::XML::Parser.string(xml) unless xml.class == LibXML::XML::Parser
-    
+    xml = ::LibXML::XML::Parser.string(xml).parse.root unless xml.kind_of?(LibXML::XML::Node)
+
     @raw, @name, @attributes = xml, xml.name, xml.attributes.to_h
     @children = xml.children.select(&:element?).group_by{|c|c.name.to_sym}
+
     
     text_value  = xml.children.select(&:text?).map(&:to_s).reject(&:empty?).join
     cdata_value = xml.children.select(&:cdata?).map{|c|c.to_s.chomp(']]>').sub('<![CDATA[', '')}.join
@@ -34,7 +35,7 @@ class ROXO
   end
 
   def inspect
-    terminal? ? value.inspect : "#<ROXO(#{name}):0x#{object_id.to_s(16)}>"
+    terminal? ? value.inspect : "#<ROXO:0x#{object_id.to_s(16)} @name=\"#{@name}\", ...>"
   end 
 
   def <=>(other)
