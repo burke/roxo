@@ -14,7 +14,6 @@ class ROXO
 
   include Comparable
   
-  # Accessors and other one-liners
   attr_reader :raw, :name, :value, :children
   def __attributes; @attributes;            end
   def   attributes; @attributes.keys;       end
@@ -44,10 +43,8 @@ class ROXO
     return z unless (z = self.value             <=> other.value            ).zero?
     return z unless (z = self.name              <=> other.name             ).zero?
 
-    our_nodes   =  self.children.values.flatten.map{|n|self.class.new(n)}
-    their_nodes = other.children.values.flatten.map{|n|self.class.new(n)}
-
-    our_nodes.sort <=> their_nodes.sort
+    nodes = lambda{|obj|obj.children.values.flatten.map{|n|self.class.new(n)}}
+    nodes[self] <=> nodes[other]
   end
 
   def method_missing(sym, *args)
