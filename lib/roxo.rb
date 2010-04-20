@@ -24,13 +24,9 @@ class ROXO
   def         to_s; @value;                 end 
   
   def initialize(xml)
-    unless xml.class == LibXML::XML::Parser
-      method = xml.respond_to?(:read) ? :read : :to_s
-      xml = ::LibXML::XML::Parser.string(xml.send(method))
-    end 
+    xml = ::LibXML::XML::Parser.string(xml) unless xml.class == LibXML::XML::Parser
     
     @raw, @name, @attributes = xml, xml.name, xml.attributes.to_h
-    
     @children = xml.children.select(&:element?).group_by{|c|c.name.to_sym}
     
     text_value  = xml.children.select(&:text?).map(&:to_s).reject(&:empty?).join
