@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
 
   gem.files = %w[
     MIT-LICENSE
-    README
+    README.md
     lib
     lib/roxo.rb
     roxo.gemspec
