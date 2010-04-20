@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version = '>= 1.8.7'
 
   gem.add_dependency("libxml-ruby")
-  gem.add_dependency("active_support")
+  gem.add_dependency("activesupport")
   
   gem.has_rdoc = false
 
