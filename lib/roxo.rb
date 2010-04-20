@@ -41,12 +41,12 @@ class ROXO
   end
 
   def method_missing(sym, *args)
-    if @children_by_name[sym]
-      return self.class.new(@children_by_name[sym].first)
+    if @children[sym]
+      return self.class.new(@children[sym].first)
     elsif @attributes[sym.to_s]
       return @attributes[sym.to_s]
-    elsif @children_by_name[sing = sym.to_s.singularize.to_sym]
-      return @children_by_name[sing].map{|e|self.class.new(e)}
+    elsif @children[sing = sym.to_s.singularize.to_sym]
+      return @children[sing].map{|e|self.class.new(e)}
     end 
   end
 
