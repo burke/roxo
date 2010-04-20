@@ -4,7 +4,7 @@ require 'libxml'
 # Ruby Objects as XML Objects
 class ROXO
   instance_methods.each do |meth|
-    eval "undef #{meth}" unless [:__send__, :__id__, :object_id, :class].include?(meth.to_sym)
+    eval "undef #{meth}" unless [:__send__, :__id__, :object_id, :class, :send].include?(meth.to_sym)
   end
 
   include Comparable
@@ -33,10 +33,9 @@ class ROXO
   end 
 
   def <=>(other)
-    return z unless (z = self.class        <=> other.class       ).zero?
-    return z unless (z = self.__attributes <=> other.__attributes).zero?
-    return z unless (z = self.value        <=> other.value       ).zero?
-    return z unless (z = self.name         <=> other.name        ).zero?
+    [:class, :__attributes, :value, :name].each do |key|
+      return z unless (z = self.send(key) <=> other.send(key)).zero?
+    end 
     nodes = lambda{|obj|obj.children.values.flatten.map{|n|self.class.new(n)}}
     nodes[self] <=> nodes[other]
   end
