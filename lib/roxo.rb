@@ -15,7 +15,7 @@ class ROXO
   include Comparable
   
   attr_reader :raw, :name, :value, :children
-  def __attributes; @attributes;            end
+  def __attributes; @attributes.sort;       end
   def   attributes; @attributes.keys;       end
   def    terminal?; @children.size.zero?;   end # A node is terminal if we can't descend any further
   def      has?(o); !! send(o);             end # Boolean. Does this exist?
@@ -38,11 +38,9 @@ class ROXO
   end 
 
   def <=>(other)
-    return z unless (z = self.class             <=> other.class            ).zero?
-    return z unless (z = self.__attributes.sort <=> other.__attributes.sort).zero?
-    return z unless (z = self.value             <=> other.value            ).zero?
-    return z unless (z = self.name              <=> other.name             ).zero?
-
+    [:class, :__attributes, :value, :name].each do |key|
+      return z unless (z = self.send(key) <=> other.send(key)).zero?
+    end 
     nodes = lambda{|obj|obj.children.values.flatten.map{|n|self.class.new(n)}}
     nodes[self] <=> nodes[other]
   end
