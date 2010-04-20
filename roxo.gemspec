@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.name    = 'roxo'
-  gem.version = "0.0.2"
+  gem.version = "0.1.0"
 
   gem.author, gem.email = 'Burke Libbey', "burke@burkelibbey.org"
 
@@ -16,6 +16,7 @@ Gem::Specification.new do |gem|
 
   gem.files = %w[
     MIT-LICENSE
+    README
     lib
     lib/roxo.rb
     roxo.gemspec
