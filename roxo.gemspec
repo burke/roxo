@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.name    = 'roxo'
-  gem.version = "0.1.1"
+  gem.version = "0.1.2"
 
   gem.author, gem.email = 'Burke Libbey', "burke@burkelibbey.org"
 
