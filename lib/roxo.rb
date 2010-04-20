@@ -1,10 +1,5 @@
-require 'rubygems'
 require 'active_support/inflector'
 require 'libxml' 
-
-# z = ROXO.new("<foo a='zxcv'><bar><baz>asdf</baz></bar></foo>")
-# z.a #=> "zxcv"
-# z.bar.baz #=> "asdf"
 
 # Ruby Objects as XML Objects
 class ROXO
@@ -56,4 +51,3 @@ class ROXO
   end
 
 end
-
