@@ -36,7 +36,11 @@ class ROXO
   end
 
   def method_missing(sym, *args)
-    if @children[sym]
+    if terminal? # Proxy all method calls to the wrapped object.
+      return @value.send(sym, *args)
+    elsif sym.to_s[-1..-1]=="?" # re-dispatch without question mark, interpret result as a boolean.
+      return %w{yes true t y}.include?(send(sym.to_s[0..-2].to_sym, *args).downcase)
+    elsif @children[sym]
       return self.class.new(@children[sym].first)
     elsif @attributes[sym.to_s]
       return @attributes[sym.to_s]
