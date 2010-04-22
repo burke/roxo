@@ -30,11 +30,11 @@ class ROXO
   end 
 
   def terminal? 
-    @children.size.zero? and @attributes.size.zero?
+    @children.blank? and @attributes.blank?
   end # A node is terminal if we can't descend any further
 
   def <=>(other)
-    return z unless (z = self.class <=> other.class).zero?
+    return -1 unless (self.class == other.class)
     return z unless (z = self.__attributes <=> other.__attributes).zero?
     return z unless (z = self.value <=> other.value).zero?
     return z unless (z = self.name <=> other.name).zero?
@@ -46,7 +46,6 @@ class ROXO
   def ==(o)
     self.<=>(o) == 0
   end 
-
   
   def method_missing(sym, *args)
     if terminal? # Proxy all method calls to the wrapped object.
@@ -54,7 +53,8 @@ class ROXO
     elsif sym.to_s[-1..-1]=="?" # re-dispatch without question mark, interpret result as a boolean.
       return %w{yes true t y}.include?(send(sym.to_s[0..-2].to_sym, *args).downcase)
     elsif @children[sym]
-      return self.class.new(@children[sym].first)
+      x = self.class.new(@children[sym].first)
+      return x.terminal? ? x.value : x
     elsif @attributes[sym.to_s]
       return @attributes[sym.to_s]
     elsif @children[sing = sym.to_s.singularize.to_sym]
