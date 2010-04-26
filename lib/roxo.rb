@@ -3,7 +3,7 @@ require 'libxml'
 
 # Ruby Objects as XML Objects
 class ROXO
-  (instance_methods - %w{__send__ __id__ object_id class send}).each{|m|eval "undef #{m}"}
+  (instance_methods.map(&:to_s) - %w{__send__ __id__ object_id class send}).each{|m|eval "undef #{m}"}
 
   include Comparable
   
@@ -14,7 +14,7 @@ class ROXO
   def         to_s; @value;                 end 
   
   def __attributes
-    @attributes.sort.reject{|a|a.to_s =~ /^xmlns/}
+    @attributes.sort.reject{|k,v|k.to_s =~ /^xmlns/}
   end 
 
   def initialize(xml)
@@ -36,7 +36,7 @@ class ROXO
   def <=>(other)
     return -1 unless (self.class == other.class)
     return z unless (z = self.__attributes <=> other.__attributes).zero?
-    return z unless (z = self.value <=> other.value).zero?
+    return z unless (z = self.value.strip <=> other.value.strip).zero?
     return z unless (z = self.name <=> other.name).zero?
 
     nodes = lambda{|obj|obj.children.values.flatten.map{|n|self.class.new(n)}}
@@ -51,7 +51,8 @@ class ROXO
     if terminal? # Proxy all method calls to the wrapped object.
       return @value.send(sym, *args)
     elsif sym.to_s[-1..-1]=="?" # re-dispatch without question mark, interpret result as a boolean.
-      return %w{yes true t y}.include?(send(sym.to_s[0..-2].to_sym, *args).downcase)
+      node = send(sym.to_s[0..-2].to_sym, *args)
+      return node ? %w{yes true t y}.include?(node.downcase) : nil
     elsif @children[sym]
       x = self.class.new(@children[sym].first)
       return x.terminal? ? x.value : x
